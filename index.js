@@ -2,8 +2,8 @@ const fs = require('fs');
 const axios = require('axios');
 const inquirer = require('inquirer');
 const util = require("util");
-
 const writeFileAsync = util.promisify(fs.writeFile);
+const pdf = require('html-pdf');
 
 inquirer
     .prompt([{
@@ -20,7 +20,6 @@ inquirer
         console.log(favoriteColor);
         axios.get(url)
             .then((res) => {
-                // const answers = [res.data.name, res.data.bio, res.data.blog, res.data.public_repos]
                 console.log(res.data);
                 function generateHTML() {
                     return `
@@ -41,9 +40,11 @@ inquirer
                         <div class="card-body" style="background-color: ${favoriteColor};">
                         <p style="text-align:center;"><img class="card-img-top" style="max-width: 18rem" src="${res.data.avatar_url}" alt="Card profile image cap"></p>
                             <h3 class="card-title" style="color: white">Hi! <br> My name is ${res.data.name}</h3>
+                            <p style="background-color:white;">
                             <a href="https://www.google.com/maps/place/${res.data.location}" class="card-link">Shoreline, WA</a>
                             <a href="${res.data.html_url}" class="card-link">GitHub Profile</a>
                             <a href="${res.data.blog}" class="card-link">Blog</a>
+                            </p>
                         </div>
                     </div>
                     <h5 style="text-align:center;">${res.data.bio}</h5>
@@ -96,6 +97,17 @@ inquirer
                   })
                   .then(function() {
                     console.log("Successfully wrote to index.html");
+                    const html2 = fs.readFileSync('./index.html', 'utf8');
+                    const options = { format: 'Letter' }; 
+                    //for some reason when I try to create the pdf, it produces a blank page
+                    //When I console log the html2, it has all the html data to be converted but it fails to do so
+                    pdf.create(html2, options).toFile('./index.pdf', function(err, res) { 
+                      if (err) return console.log(err);
+                      // I don't get any errors, but it only produces the blank page
+                      // initially was goint to use the html to convert to pdf before deleting the html... but have to keep it for now since
+                      // it's the only thing that works :(
+                      console.log("Successfully wrote to index.pdf");
+                    });
                   })
                   .catch(function(err) {
                     console.log(err);
