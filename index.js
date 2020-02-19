@@ -32,20 +32,62 @@ inquirer
                     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
                     <title>Document</title>
                   </head>
-                  <body style="background-color: ${favoriteColor};">
-                    <div class="jumbotron jumbotron-fluid" style="background-color: ${favoriteColor};">
-                    <div class="container" size: 90% style="background-color: white;">
-                        <img src="${res.data.avatar_url}">
-                      <h1 class="display-4">Hi! My name is ${res.data.name}</h1>
-                      <p class="lead">I am from ${res.data.location}.</p>
-                      <h3>${res.data.bio}<span class="badge badge-secondary">Contact Me</span></h3>
-                      <ul class="list-group">
-                        <li class="list-group-item">My GitHub username is </li>
-                        <li class="list-group-item">LinkedIn: </li>
-                      </ul>
+                  <body>
+                  <div class="row">
+                  <div class="col-sm-2">
+                  </div>
+                  <div class="col-sm-8">
+                  <div class="card text-center">
+                        <div class="card-body" style="background-color: ${favoriteColor};">
+                        <p style="text-align:center;"><img class="card-img-top" style="max-width: 18rem" src="${res.data.avatar_url}" alt="Card profile image cap"></p>
+                            <h3 class="card-title" style="color: white">Hi! <br> My name is ${res.data.name}</h3>
+                            <a href="https://www.google.com/maps/place/${res.data.location}" class="card-link">Shoreline, WA</a>
+                            <a href="${res.data.html_url}" class="card-link">GitHub Profile</a>
+                            <a href="${res.data.blog}" class="card-link">Blog</a>
+                        </div>
+                    </div>
+                    <h5 style="text-align:center;">${res.data.bio}</h5>
+                    <div class="row">
+                    <div class="col-sm-1">
+                    </div>
+                        <div class="col-sm-5">
+                            <div class="card text-center">
+                                <div class="card-body" style="background-color: ${favoriteColor};">
+                                    <h3 class="card-title" style="color: white">Public Repositories</h3>
+                                    <p class="card-text" style="color: white">${res.data.public_repos}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="card text-center">
+                                <div class="card-body" style="background-color: ${favoriteColor};">
+                                    <h3 class="card-title" style="color: white">Following</h3>
+                                    <p class="card-text" style="color: white">${res.data.followers}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                  </div>
+                    <div class="row">
+                    <div class="col-sm-1">
+                    </div>
+                        <div class="col-sm-5">
+                            <div class="card text-center">
+                                <div class="card-body" style="background-color: ${favoriteColor};">
+                                    <h3 class="card-title" style="color: white">GitHub Stars</h3>
+                                    <p class="card-text" style="color: white">${res.data.starred}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="card text-center">
+                                <div class="card-body" style="background-color: ${favoriteColor};">
+                                    <h3 class="card-title" style="color: white">Following</h3>
+                                    <p class="card-text" style="color: white">${res.data.following}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                   </body>
                   </html>`;
                   }
