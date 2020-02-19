@@ -30,10 +30,10 @@ inquirer
                     <meta charset="UTF-8">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-                    <title>Document</title>
+                    <title>Profile Generator</title>
                   </head>
                   <body>
-                  <div class="row">
+                  <div class="row" style="margin-top:20px;">
                   <div class="col-sm-2">
                   </div>
                   <div class="col-sm-8">
