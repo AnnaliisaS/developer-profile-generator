@@ -53,7 +53,7 @@ inquirer
                         <div class="col-sm-5">
                             <div class="card text-center">
                                 <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h3 class="card-title" style="color: white">Public Repositories</h3>
+                                    <h5 class="card-title" style="color: white">Public Repositories</h3>
                                     <p class="card-text" style="color: white">${res.data.public_repos}</p>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@ inquirer
                         <div class="col-sm-5">
                             <div class="card text-center">
                                 <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h3 class="card-title" style="color: white">Following</h3>
+                                    <h5 class="card-title" style="color: white">Following</h3>
                                     <p class="card-text" style="color: white">${res.data.followers}</p>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@ inquirer
                         <div class="col-sm-5">
                             <div class="card text-center">
                                 <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h3 class="card-title" style="color: white">GitHub Stars</h3>
+                                    <h5 class="card-title" style="color: white">GitHub Stars</h3>
                                     <p class="card-text" style="color: white">${res.data.starred}</p>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@ inquirer
                         <div class="col-sm-5">
                             <div class="card text-center">
                                 <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h3 class="card-title" style="color: white">Following</h3>
+                                    <h5 class="card-title" style="color: white">Following</h3>
                                     <p class="card-text" style="color: white">${res.data.following}</p>
                                 </div>
                             </div>
