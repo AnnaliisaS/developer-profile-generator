@@ -47,7 +47,7 @@ inquirer
                         </div>
                     </div>
                     <h5 style="text-align:center;">${res.data.bio}</h5>
-                    <div class="row">
+                    <div class="row" style="margin-bottom:20px;">
                     <div class="col-sm-1">
                     </div>
                         <div class="col-sm-5">
