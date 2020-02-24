@@ -181,13 +181,13 @@ function generateHTML(data) {
           <div class="links-nav">
             <ul>
               <li class="nav-link">
-                <h6>${data.location}</h6>
+                <h6><a href="https://www.google.com/maps/place/${data.location}">${data.location}</a></h6>
               </li>
               <li class="nav-link">
-                <h6>${data.html_url}</h6>
+                <h6><a href="${data.html_url}">${data.html_url}</a></h6>
               </li>
               <li class="nav-link">
-                <h6>${data.blog}</h6>
+                <h6><a href="${data.blog}">${data.blog}</a></h6>
               </li>
             </ul>
           </div>
