@@ -1,115 +1,68 @@
-const fs = require('fs');
-const axios = require('axios');
-const inquirer = require('inquirer');
+const fs = require("fs");
 const util = require("util");
+const axios = require("axios");
+const inquirer = require("inquirer");
+const pdf = require("html-pdf");
+const generateHTML = require("./generateHTML");
 const writeFileAsync = util.promisify(fs.writeFile);
-const pdf = require('html-pdf');
 
-inquirer
-    .prompt([{
-        message: 'Enter your Github username',
-        name: 'username'
-    },
-    {
-        message: 'What is your favorite color?',
-        name: 'favoriteColor'
-    },
-    ])
-    .then(({ username, favoriteColor }) => {
-        const url = `https://api.github.com/users/${username}`;
-        console.log(favoriteColor);
-        axios.get(url)
-            .then((res) => {
-                console.log(res.data);
-                function generateHTML() {
-                    return `
-                  <!DOCTYPE html>
-                  <html lang="en">
-                  <head>
-                    <meta charset="UTF-8">
-                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-                    <title>Profile Generator</title>
-                  </head>
-                  <body>
-                  <div class="row" style="margin-top:20px;">
-                  <div class="col-sm-2">
-                  </div>
-                  <div class="col-sm-8">
-                  <div class="card text-center">
-                        <div class="card-body" style="background-color: ${favoriteColor};">
-                        <p style="text-align:center;"><img class="card-img-top" style="max-width: 18rem" src="${res.data.avatar_url}" alt="Card profile image cap"></p>
-                            <h3 class="card-title" style="color: white">Hi! <br> My name is ${res.data.name}</h3>
-                            <p style="background-color:white;">
-                            <a href="https://www.google.com/maps/place/${res.data.location}" class="card-link">Shoreline, WA</a>
-                            <a href="${res.data.html_url}" class="card-link">GitHub Profile</a>
-                            <a href="${res.data.blog}" class="card-link">Blog</a>
-                            </p>
-                        </div>
-                    </div>
-                    <h5 style="text-align:center;">${res.data.bio}</h5>
-                    <div class="row" style="margin-bottom:20px;">
-                    <div class="col-sm-1">
-                    </div>
-                        <div class="col-sm-5">
-                            <div class="card text-center">
-                                <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h5 class="card-title" style="color: white">Public Repositories</h3>
-                                    <p class="card-text" style="color: white">${res.data.public_repos}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <div class="card text-center">
-                                <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h5 class="card-title" style="color: white">Following</h3>
-                                    <p class="card-text" style="color: white">${res.data.followers}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+//user prompts
+const questions = [
+  {
+    type: "input",
+    name: "username",
+    message: "What is your GitHub username?"
+  },
+  {
+    type: "list",
+    name: "color",
+    message: "What is your favorite color?",
+    choices: ["green", "blue", "pink", "red"]
+  }
+];
 
-                    <div class="row">
-                    <div class="col-sm-1">
-                    </div>
-                        <div class="col-sm-5">
-                            <div class="card text-center">
-                                <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h5 class="card-title" style="color: white">GitHub Stars</h3>
-                                    <p class="card-text" style="color: white">${res.data.starred}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <div class="card text-center">
-                                <div class="card-body" style="background-color: ${favoriteColor};">
-                                    <h5 class="card-title" style="color: white">Following</h3>
-                                    <p class="card-text" style="color: white">${res.data.following}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                  </body>
-                  </html>`;
-                  }
-                    const html = generateHTML(res.data);
-                     return writeFileAsync("index.html", html);
-                  })
-                  .then(function() {
-                    console.log("Successfully wrote to index.html");
-                    const html2 = fs.readFileSync('./index.html', 'utf8');
-                    const options = { format: 'Letter' }; 
-                    //for some reason when I try to create the pdf, it produces a blank page
-                    //When I console log the html2, it has all the html data to be converted but it fails to do so
-                    pdf.create(html2, options).toFile('./index.pdf', function(err, res) { 
-                      if (err) return console.log(err);
-                      // I don't get any errors, but it only produces the blank page
-                      // initially was goint to use the html to convert to pdf before deleting the html... but have to keep it for now since
-                      // it's the only thing that works :(
-                      console.log("Successfully wrote to index.pdf");
-                    });
-                  })
-                  .catch(function(err) {
-                    console.log(err);
-                  });
-            })
+// use the info provided by user to retrieve info from GitHub and set color for cards
+function getUserInfo() {
+  return new Promise(function(resolve, reject) {
+    inquirer.prompt(questions).then(async function(answers) {
+      const { username, color } = answers;
+      const queryUrl = `https://api.github.com/users/${username}`;
+      try {
+        const response = await axios.get(queryUrl);
+        const stars = await getStars(username);
+        resolve({
+          ...response.data,
+          color,
+          stars
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+}
+//this second call is necessary, otherwise the data retrieved from first call returns the url only for 'starred'
+function getStars(username) {
+  const queryUrl2 = `https://api.github.com/users/${username}/starred`;
+  return axios.get(queryUrl2).then(function(res) {
+    const repos = res.data.length;
+    return repos;
+  });
+}
+
+// html file generated from user input, then html file gets converted to pdf
+async function init() {
+  try {
+    const data = await getUserInfo();
+    const html = generateHTML(data);
+    await writeFileAsync("./profile.html", html);
+    pdf.create(html).toFile("./Profile Generator.pdf", function(err, res) {
+      if (err) throw err;
+      console.log(res);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+init();
